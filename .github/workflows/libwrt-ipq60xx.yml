@@ -73,12 +73,14 @@ jobs:
           cat > .config <<EOF
           CONFIG_TARGET_qualcommax=y
           CONFIG_TARGET_qualcommax_${SUBTARGET}=y
+          CONFIG_TARGET_MULTI_PROFILE=y
           CONFIG_TARGET_ALL_PROFILES=y
           CONFIG_PACKAGE_luci-theme-vantage=y
           EOF
           # ALL_PROFILES 的机型符号要跑两次 defconfig 才展开（首次只生成 metadata.choice），
           # 单次 defconfig 后机型数是 0（run 43150793653/43150785809 的教训）
           for i in 1 2 3; do
+            grep -q "^CONFIG_TARGET_MULTI_PROFILE=y" .config || echo "CONFIG_TARGET_MULTI_PROFILE=y" >> .config
             grep -q "^CONFIG_TARGET_ALL_PROFILES=y" .config || echo "CONFIG_TARGET_ALL_PROFILES=y" >> .config
             make defconfig > defconfig.log 2>&1 || { tail -50 defconfig.log; exit 1; }
             N=$(grep -c "^CONFIG_TARGET_DEVICE_qualcommax_${SUBTARGET}_DEVICE_.*=y" .config || true)
