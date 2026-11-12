@@ -14,6 +14,9 @@ on:
 env:
   TZ: Asia/Shanghai
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: 🔧 编译 ipq60xx 全机型
