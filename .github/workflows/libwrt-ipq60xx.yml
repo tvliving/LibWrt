@@ -4,6 +4,9 @@
 name: 🛠️ LibWrt IPQ60XX (NSS) Build
 
 on:
+  schedule:
+    # Tue/Thu 17:00 Asia/Shanghai (UTC 09:00)
+    - cron: '0 9 * * 2,4'
   workflow_dispatch:
     inputs:
       make_release:
@@ -175,7 +178,7 @@ jobs:
   release:
     name: 📦 发布 Release
     needs: build
-    if: always() && needs.build.result == 'success' && inputs.make_release
+    if: always() && needs.build.result == 'success' && (github.event_name != 'workflow_dispatch' || inputs.make_release)
     runs-on: ubuntu-24.04
     env:
       SUBTARGET: ipq60xx
